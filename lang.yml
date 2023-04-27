@@ -1,0 +1,27 @@
+courses:
+  en-US: courses
+  pt-BR: cursos
+
+certificate:
+  en-US: certificate
+  pt-BR: certificado
+
+interests:
+  en-US: interests
+  pt-BR: interesses
+
+education:
+  en-US: education
+  pt-BR: educação
+
+experiences:
+  en-US: experiences
+  pt-BR: experiências
+
+profile:
+  en-US: profile
+  pt-BR: perfil
+
+projects:
+  en-US: projects
+  pt-BR: projetos

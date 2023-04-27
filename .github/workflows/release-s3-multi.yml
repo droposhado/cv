@@ -1,0 +1,76 @@
+name: release s3 multi
+
+on:
+  push:
+    branches:
+      - main
+
+  schedule:
+    - cron: '00 04 * * *'
+
+  workflow_dispatch:
+
+jobs:
+
+  pdf:
+    runs-on: ubuntu-latest
+    env:
+      SABEDORIA_URL: ${{ secrets.SABEDORIA_URL }}
+      SABEDORIA_TOKEN: ${{ secrets.SABEDORIA_TOKEN }}
+      OUTPUT_DIR: dist
+
+    steps:
+
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install deps
+        run: pip install -r scripts/requirements.txt
+
+      - name: Generate latex
+        run: LANG=pt-BR python scripts/base.py > src/cv_pt-BR.tex
+
+      - name: Generate latex
+        run: LANG=en-US python scripts/base.py > src/cv_en-US.tex
+
+      - name: List generated tex files
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends tree
+          tree .
+
+      - name: Install Latex support
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends dvipng \
+               texlive-latex-extra texlive-fonts-extra texlive-fonts-recommended \
+               texlive-lang-portuguese texlive-latex-recommended texlive-xetex
+
+      - name: Create output dir
+        run: mkdir ${OUTPUT_DIR}
+
+      - name: Generate file
+        run: scripts/generate.sh cv_pt-BR.tex
+
+      - name: Generate file
+        run: scripts/generate.sh cv_en-US.tex
+
+      - name: List generated pdf files
+        run: ls -lh ${OUTPUT_DIR}
+
+      - name: Push backups to S3 Bucket
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --follow-symlinks --exclude "*.aux" --exclude "*.log"
+        env:
+          AWS_S3_ENDPOINT: ${{ secrets.BUCKET_ENDPOINT }}
+          AWS_S3_BUCKET: ${{ secrets.BUCKET_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'us-west-1' 
+          SOURCE_DIR: 'dist'
