@@ -33,11 +33,20 @@ ${ description }
 \begin{cventries}
 % for e in education:
 
+<%
+    if e["end"] is None or e["end"] == "":
+        e_end = i18n["current"][lang].capitalize()
+
+    else:
+        e_end = e["end"][0:4]
+
+%>
+
   \cventry
     {${ e["university"] }}
     {${ e["title"] }}
     {${ e["location"] }}
-    {${ e["start"][0:4] } - ${ e["end"][0:4] }}
+    {${ e["start"][0:4] } - ${ e_end }}
     {
       \begin{cvitems}
         \item {${ e["thesis"] }}
@@ -51,11 +60,20 @@ ${ description }
 \begin{cventries}
 % for j in jobs:
 
+<%
+    if j["end"] is None or j["end"] == "":
+        j_end = i18n["current"][lang].capitalize()
+
+    else:
+        j_end = j["end"][0:7]
+
+%>
+
   \cventry
     {${ j["employer"] }}
     {${ j["title"].capitalize() }}
     {}
-    {${ j["start"][0:7] } - ${ j["end"][0:7] }}
+    {${ j["start"][0:7]} - ${ j_end } }
     {
       \begin{cvitems}
         % for d in j["description"]:

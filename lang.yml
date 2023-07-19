@@ -6,6 +6,10 @@ certificate:
   en-US: certificate
   pt-BR: certificado
 
+current:
+  en-US: currently
+  pt-BR: atualmente
+
 interests:
   en-US: interests
   pt-BR: interesses
