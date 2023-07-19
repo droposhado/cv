@@ -30,8 +30,7 @@ for d in data["descriptions"]:
     description = d.get("value")
 
 t = Template(filename="src/base.tex.mako")
-r = t.render(
-        i18n=i18n,
+r = t.render(i18n=i18n,
         lang=LANG,
         courses=data["courses"],
         description=description,
